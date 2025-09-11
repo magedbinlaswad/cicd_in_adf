@@ -1,0 +1,52 @@
+{
+	"name": "DelimitedText1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blobstorage765",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "students.txt",
+				"fileSystem": "mydata"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "101",
+				"type": "String"
+			},
+			{
+				"name": "maged",
+				"type": "String"
+			},
+			{
+				"name": "mohammed",
+				"type": "String"
+			},
+			{
+				"name": "31",
+				"type": "String"
+			},
+			{
+				"name": "M",
+				"type": "String"
+			},
+			{
+				"name": "maged@gmail.com",
+				"type": "String"
+			},
+			{
+				"name": "2025-11-11",
+				"type": "String"
+			}
+		]
+	}
+}
