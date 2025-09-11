@@ -1,0 +1,87 @@
+name: adf-ci-cd
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ADF_RESOURCE_GROUP: "rg_devop"          # source ADF RG
+  ADF_NAME: "adfdevop2025v1"              # source ADF
+  TARGET_RESOURCE_GROUP: "rg_prod"         # target ADF RG
+  TARGET_ADF_NAME: "adfprod2055v1"         # target ADF
+  ADF_UTILS_DIR: "build"
+  ARTIFACT_NAME: "ExportedArmTemplate"
+  NODE_VERSION: "18.x"
+
+concurrency:
+  group: adf-cicd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install ADF Utilities package
+        working-directory: ${{ github.workspace }}/${{ env.ADF_UTILS_DIR }}
+        run: npm install
+
+      - name: Validate
+        working-directory: ${{ github.workspace }}/${{ env.ADF_UTILS_DIR }}
+        run: |
+          npm run build validate \
+            "${{ github.workspace }}/" \
+            "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ env.ADF_RESOURCE_GROUP }}/providers/Microsoft.DataFactory/factories/${{ env.ADF_NAME }}"
+
+      - name: Validate and Generate ARM template
+        working-directory: ${{ github.workspace }}/${{ env.ADF_UTILS_DIR }}
+        run: |
+          npm run build export \
+            "${{ github.workspace }}/" \
+            "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ env.ADF_RESOURCE_GROUP }}/providers/Microsoft.DataFactory/factories/${{ env.ADF_NAME }}" \
+            "${{ env.ARTIFACT_NAME }}"
+
+      - name: Upload ARM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ github.workspace }}/${{ env.ADF_UTILS_DIR }}/${{ env.ARTIFACT_NAME }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ARM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.ARTIFACT_NAME }}
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Data Factory
+        uses: Azure/data-factory-deploy-action@v1.2.0
+        with:
+          resourceGroupName: ${{ env.TARGET_RESOURCE_GROUP }}
+          dataFactoryName: ${{ env.TARGET_ADF_NAME }}
+          armTemplateFile: ${{ env.ARTIFACT_NAME }}/ARMTemplateForFactory.json
+          armTemplateParametersFile: ${{ env.ARTIFACT_NAME }}/ARMTemplateParametersForFactory.json
+          # If your parameters file expects the factory name, pass it here (check the exact key in the JSON):
+          # additionalParameters: "factoryName=${{ env.TARGET_ADF_NAME }}"
