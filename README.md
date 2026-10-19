@@ -1,74 +1,78 @@
-Azure Data Factory CI/CD Automation
-Hands-on Azure Data Engineering Training Project | Digital Edify Technologies
-Project Overview
-This project demonstrates the fundamentals of Continuous Integration and Continuous Deployment (CI/CD) for Azure Data Factory using GitHub Actions.
-Developed as part of my 5-month Azure Data Engineering training, the project focuses on version-controlling Azure Data Factory resources, validating configurations, generating ARM templates, and practicing automated deployment between Azure environments.
-Technologies Used
-• Azure Data Factory (ADF) – Data pipelines and integration workflows
-• GitHub Actions – CI/CD workflow automation
-• Azure Resource Manager (ARM) – Deployment templates
-• Azure Storage / Data Lake – Sample data integration
-• JSON – Pipeline and resource configurations
-• ADF Utilities – Resource validation and template generation
-Project Implementation
-The repository contains sample Azure Data Factory resources and a GitHub Actions workflow.
-Key components include:
-• Created sample ADF pipelines using Wait, Copy Data, and Delete activities.
-• Configured datasets and linked services for Azure Storage and Data Lake connections.
-• Used GitHub for version control of Data Factory resources.
-• Configured GitHub Actions to validate ADF configurations and export ARM templates.
-• Added a deployment stage using Azure authentication and ARM-based deployment.
-CI/CD Workflow
-The workflow is defined in .github/workflows/main.yml and is triggered by pushes to the main branch.
-1. Source Control
-ADF resource definitions are maintained in GitHub.
-2. Build & Validation
-GitHub Actions installs the Azure Data Factory Utilities package, validates the ADF resources, and generates ARM deployment templates.
-3. Build Artifacts
-The generated ARM templates and parameters are uploaded as GitHub Actions artifacts.
-4. Deployment
-The release stage uses Azure authentication and the Azure Data Factory deployment action to deploy the generated templates to a configured target environment.
-Repository Structure
-• .github/workflows/main.yml – GitHub Actions CI/CD configuration
-• build/package.json – ADF Utilities package configuration
-• factory/ – Data Factory definition
-• pipeline/ – Sample ADF pipelines
-• dataset/ – Dataset configurations
-• linkedService/ – Azure storage connections
-• publish_config.json – ADF publishing configuration
-Running the Project
-To reproduce the project in your own Azure environment:
-1. Clone this repository.
-2. Prepare the required Azure Data Factory and storage resources.
-3. Update the source and target Azure resource references in the workflow.
-4. Configure the required GitHub Actions secrets:
+# Azure Data Factory CI/CD Automation
 
+**Azure Data Engineering | Hands-on Training Project**  
+**Digital Edify Technologies | 2025**
 
-AZURE_CLIENT_ID
-AZURE_TENANT_ID
-AZURE_SUBSCRIPTION_ID
-5. Configure the appropriate Azure identity permissions and federated credentials.
-6. Review the sample pipelines before execution.
-7. Push changes to main and review the results in GitHub Actions.
-Note: The sample Copy/Delete pipeline includes a Delete activity after a successful copy. Use test data and verify the source and destination configuration before execution.
-Project Status
-This repository is a training implementation rather than a production deployment.
-The CI/CD workflow has recorded successful build and release runs during training. Later runs also encountered Azure authentication and subscription-access issues, so the configuration may require updates before reuse in another environment.
-Key Learning Outcomes
-Through this project, I gained practical exposure to:
-• Creating and managing Azure Data Factory pipelines
-• Configuring datasets and linked services
-• Using Git for version control
-• Understanding CI/CD workflows in data engineering
-• Validating ADF resources and generating ARM templates
-• Working with GitHub Actions and Azure deployment configurations
-The project helped me understand how source control and deployment automation support more consistent management of data integration workflows.
+---
 
+## Project Overview
 
-⸻
+This project demonstrates how GitHub Actions can support **Continuous Integration and Continuous Deployment (CI/CD)** for Azure Data Factory (ADF).
 
+Developed during a five-month Azure Data Engineering training program, it covers version control, validation of ADF resources, generation of ARM templates, and deployment workflow configuration. It is a **training project**, not a production system.
 
-Project Type: Professional Training Project
-Training Provider: Digital Edify Technologies
-Year: 2025
-GitHub: https://github.
+## Key Components
+
+- Created sample ADF pipelines using **Wait**, **Copy Data**, and **Delete** activities.
+- Configured sample **datasets** and **linked services** for Azure Storage and Data Lake.
+- Stored ADF resource definitions in GitHub for version control.
+- Set up GitHub Actions to **validate ADF resources** and **export ARM templates**.
+- Configured a release stage for Azure authentication and template-based ADF deployment.
+
+## Technologies Used
+
+| Technology | Purpose |
+| --- | --- |
+| Azure Data Factory | Data pipelines and resource configuration |
+| GitHub Actions | CI/CD workflow automation |
+| ADF Utilities | Resource validation and ARM template export |
+| ARM Templates / JSON | Deployment and configuration files |
+| Azure Storage / Data Lake | Sample data sources and destinations |
+
+## CI/CD Workflow
+
+The workflow is defined in `.github/workflows/main.yml` and runs when changes are pushed to the `main` branch.
+
+1. **Source control:** Keep ADF pipelines, datasets, and linked services in GitHub.
+2. **Validate:** Use ADF Utilities to check resource definitions.
+3. **Export:** Generate ARM deployment templates and upload them as a build artifact.
+4. **Release:** Download the artifact, authenticate to Azure, and attempt deployment to the configured target Data Factory.
+
+## Repository Structure
+
+| Path | Contents |
+| --- | --- |
+| `.github/workflows/main.yml` | CI/CD workflow |
+| `build/package.json` | ADF Utilities package setup |
+| `factory/` | Data Factory definition |
+| `pipeline/` | Sample pipelines |
+| `dataset/` | Dataset definitions |
+| `linkedService/` | Storage connection definitions |
+| `publish_config.json` | ADF publishing configuration |
+
+## How to Run
+
+1. Clone the repository and set up your own Azure Data Factory and storage resources.
+2. Update the Azure resource IDs, resource group names, and Data Factory names in the workflow file.
+3. Configure Azure identity permissions and the required GitHub Actions secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, and `AZURE_SUBSCRIPTION_ID`.
+4. Review the sample pipelines and their data sources before execution.
+5. Push a change to `main`, then check the results under **GitHub Actions**.
+
+**Safety note:** One sample pipeline runs a Delete activity after a successful copy. Use test data only and verify the source and destination settings before running it.
+
+## Workflow Status
+
+Earlier training runs completed both **build** and **release** stages successfully. The [latest visible run](https://github.com/magedbinlaswad/cicd_in_adf/actions/runs/19789313813) failed during Azure authentication/subscription access; the workflow may need updated credentials and configuration before it can be reused.
+
+## Key Learning Outcomes
+
+- Working with ADF pipelines, datasets, and linked services.
+- Using GitHub to track data integration resource changes.
+- Validating ADF resources and generating ARM templates.
+- Understanding build and release stages in a data engineering CI/CD workflow.
+
+---
+
+**Project type:** Professional Training Project  
+**Training provider:** Digital Edify Technologies  
+**Repository:** https://github.com/magedbinlaswad/cicd_in_adf
